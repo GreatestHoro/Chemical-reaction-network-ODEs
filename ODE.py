@@ -3,11 +3,12 @@ from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from itertools import count
+from threading import Timer
 
 
 #Equation 4.11, ODE.
 #Returns a system of ODEs, as a list
-def reaction(C, t):
+def ODES(C, t):
     #Concentrations
     cA = C[0]
     cB = C[1]
@@ -42,22 +43,40 @@ def reaction(C, t):
 
     return [dAdt, dBdt, dCdt, dDdt, dEdt]
 
-
 index = count()
+def Concentrations(): 
+    A = 1
+    B = 100
+    C = 1
+    D = 1
+    E = 1
+
+    # while True :
+    #     if A < B : 
+    #         A = A + 1
+    #     elif A == B : 
+    #         print ("equlibrium")
+    #         False
+    #     else :
+    #         print("Still not netrual")
+
+
+    return [A, B, C, D, E]
+
+
 def animate(i):
 
-    t = np.linspace(0, 3, 100)
-    c0 = [100 - next(index), 100 - next(index),100 - next(index),100 - next(index),100 - next(index)]
-    c = odeint(reaction, c0,t)
+    t = np.linspace(0, 1 + next(index), 100)
+    c0 = Concentrations()
+    c = odeint(ODES, c0,t)
 
     print(c0)
-
     plt.cla()
-    plt.plot(t,c[:,0], 'r--', linewidth=2.0)
-    plt.plot(t,c[:,1], 'g--', linewidth=2.0)
-    plt.plot(t,c[:,2], 'b--', linewidth=2.0)
-    plt.plot(t,c[:,3], 'p--', linewidth=2.0)
-    plt.plot(t,c[:,4], 'y--', linewidth=2.0)
+    plt.plot(t,c[:,0])
+    plt.plot(t,c[:,1])
+    plt.plot(t,c[:,2])
+    plt.plot(t,c[:,3])
+    plt.plot(t,c[:,4])
 
     plt.xlabel('Time (s)')
     plt.ylabel('Concentration')
