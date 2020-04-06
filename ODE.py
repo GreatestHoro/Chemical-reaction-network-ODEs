@@ -5,7 +5,7 @@ from matplotlib.animation import FuncAnimation
 from itertools import count
 from threading import Timer
 
-
+con = [1,1,1,1,1]
 #Equation 4.11, ODE.
 #Returns a system of ODEs, as a list
 def ODES(C, t):
@@ -41,49 +41,57 @@ def ODES(C, t):
     dDdt = r3 - r4 + r5 
     dEdt = r4 - r7 - r6
 
-    return [dAdt, dBdt, dCdt, dDdt, dEdt]
+    return dAdt
 
 index = count()
-def Concentrations(): 
-    A = 1
-    B = 100
-    C = 1
-    D = 1
-    E = 1
+def Concentrations():
 
-    # while True :
-    #     if A < B : 
-    #         A = A + 1
-    #     elif A == B : 
-    #         print ("equlibrium")
-    #         False
-    #     else :
-    #         print("Still not netrual")
+
+    A = con[0]
+    B = con[1]
+    C = con[2]
+    D = con[3]
+    E = con[4]
 
 
     return [A, B, C, D, E]
 
 
-def animate(i):
+def euler() :
+    eq1 = ODES(con, 1)
+    print(eq1)
+    y0 = con[0]
+    h = 0.1
+    n = 10
+    i = 0 
+    yn = 0
+    
+    while i < n : 
+        yn = y0 + h * eq1
+        y0 = yn 
+        i = i + 1
 
-    t = np.linspace(0, 1 + next(index), 100)
-    c0 = Concentrations()
-    c = odeint(ODES, c0,t)
+euler()
 
-    print(c0)
-    plt.cla()
-    plt.plot(t,c[:,0])
-    plt.plot(t,c[:,1])
-    plt.plot(t,c[:,2])
-    plt.plot(t,c[:,3])
-    plt.plot(t,c[:,4])
+# def animate(i):
+#     t = np.linspace(0, 10, 100)
+#     c0 = con
 
-    plt.xlabel('Time (s)')
-    plt.ylabel('Concentration')
-    plt.legend(['cA','cB','cC','cD','cE'])
+#     c = odeint(ODES, c0 ,t)
+
+#     plt.cla()
+#     plt.plot(t,c[:,0])
+#     plt.plot(t,c[:,1])
+#     plt.plot(t,c[:,2])
+#     plt.plot(t,c[:,3])
+#     plt.plot(t,c[:,4])
+
+#     plt.xlabel('Time (s)')
+#     plt.ylabel('Concentration')
+#     plt.legend(['cA','cB','cC','cD','cE'])
     
 
-ani = FuncAnimation(plt.gcf(), animate, interval = 1000)
+# ani = FuncAnimation(plt.gcf(), animate, interval = 1000)
 
-plt.tight_layout()
-plt.show()
+# plt.tight_layout()
+# # plt.show()
