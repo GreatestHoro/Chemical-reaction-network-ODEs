@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from itertools import count
 from threading import Timer
+import warnings
 
 con = [1,1,1,1,1]
 #Equation 4.11, ODE.
@@ -41,7 +42,7 @@ def ODES(C, t):
     dDdt = r3 - r4 + r5 
     dEdt = r4 - r7 - r6
 
-    return dAdt
+    return [dAdt, dBdt, dCdt, dDdt, dEdt]
 
 index = count()
 def Concentrations():
@@ -58,18 +59,66 @@ def Concentrations():
 
 
 def euler() :
-    eq1 = ODES(con, 1)
-    print(eq1)
-    y0 = con[0]
-    h = 0.1
-    n = 10
-    i = 0 
-    yn = 0
-    
-    while i < n : 
-        yn = y0 + h * eq1
-        y0 = yn 
-        i = i + 1
+        ft = 10     #final t
+        h = 0.00125    #step size
+        t = np.arange(0,ft + 0.5,h)
+
+        print ("T value")
+        print (t)
+        n = len(t)
+
+        cA = np.ones(n)
+        cB = np.ones(n)
+        cC = np.ones(n)
+        cD = np.ones(n)
+        cE = np.ones(n)
+
+        for i in range(0,n):
+            cA[i] = 100
+            cB[i] = 90
+            cC[i] = 80
+            cD[i] = 70
+            cE[i] = 60
+
+        print(cA,cB,cC,cD,cE)
+        
+        #Rates
+        k1 = 1  #Alpha
+        k2 = 1  #Beta
+        k3 = 1  #Gamme
+        k4 = 1  #Epsillion
+        k5 = 1  #Delta
+        k6 = 1  #Zeta
+        k7 = 1  #Theta
+        
+        for i in range(1,n):
+            r1 = k1 * cA[i-1]
+            r2 = k2 * cB[i-1]
+            r3 = k3 * cA[i-1] * cC[i-1]
+            r4 = k4 * cD[i-1]
+            r5 = k5 * cB[i-1] * cE[i-1]
+            r6 = k6 * cB[i-1] * cE[i-1]
+            r7 = k7 * cE[i-1]
+
+            cA[i] = (-r1 + r2 - r3 + r6) * h + cA[i-1]
+            cB[i] = (r1 - r2 + r4 - r5 - r6) * h + cB[i-1]
+            cC[i] = (-r3 + r6 + r7) * h + cC[i-1]
+            cE[i] = (r3 - r4 + r5 ) * h + cD[i-1]
+            cD[i] = (r4 - r7 - r6) * h + cE[i-1]
+            
+        plt.cla()
+        plt.plot(t, cA)
+        plt.plot(t, cB)
+        plt.plot(t, cC)
+        plt.plot(t, cD)
+        plt.plot(t, cE)
+
+        plt.xlabel('Time (s)')
+        plt.ylabel('Concentration')
+        plt.legend(['cA','cB','cC','cD','cE'])
+        plt.show()
+
+
 
 euler()
 
