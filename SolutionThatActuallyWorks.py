@@ -13,11 +13,11 @@ index = count()
 
 caMa = [[[] for i in range(2) ] for i in range(amount)]
 iter = [100, 20, 100, 100, 100]
-name = ['A1', 'B2', 'C3', 'D4', 'E5']
+name = ['A', 'B', 'C', 'D', 'E']
 style = ['g-','ro-','b:','y-.', 'b--']
 pre_val = [100,90,80,70,60]
 
-ft = 100  #final t
+ft = 100            #final t
 h = 0.00125         #step size
 t = np.arange(0,ft + 0.5,1)
 n = len(t)
@@ -44,8 +44,8 @@ def oneEuler(val) :
     val[0] = (-r1 + r2 - r3 + r6) * h + old[0]
     val[1] = (r1 - r2 + r4 - r5 - r6) * h + old[1]
     val[2] = (-r3 + r6 + r7) * h + old[2]
-    val[4] = (r3 - r4 + r5 ) * h + old[3]
-    val[3] = (r4 - r7 - r6) * h + old[4]
+    val[3] = (r3 - r4 + r5 ) * h + old[3]
+    val[4] = (r4 - r7 - r6) * h + old[4]
 
     return val
 
