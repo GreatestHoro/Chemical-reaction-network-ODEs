@@ -11,7 +11,8 @@ amount = 5
 
 index = count()
 
-caMa = [[[] for i in range(2) ] for i in range(amount)]
+caMa = [[] for i in range(amount)]
+stepList = []
 iter = [100, 20, 100, 100, 100]
 name = ['A', 'B', 'C', 'D', 'E']
 style = ['g-','ro-','b:','y-.', 'b--']
@@ -59,12 +60,12 @@ def animate(i) :
     ax1 = plt.subplot(212)
     ax1.grid(True, linestyle='-.')
     ax2 = plt.subplot(211)
+    stepList.append(next(index))
     for j in range(0, amount):
         if i <= iter[j] :
-            caMa[j][0].append(next(index))
-            caMa[j][1].append(pre_val[j])
-        ax1.plot(caMa[j][0], caMa[j][1], style[j] ,label=name[j])
-        ax2.plot(caMa[j][0], caMa[j][1], style[j] ,label=name[j])
+            caMa[j].append(pre_val[j])
+        ax1.plot(stepList, caMa[j], style[j] ,label=name[j])
+        ax2.plot(stepList, caMa[j], style[j] ,label=name[j])
         plt.legend()
 
 ani = FuncAnimation(plt.gcf(), animate, interval=1000)
