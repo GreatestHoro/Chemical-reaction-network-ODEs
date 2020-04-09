@@ -104,7 +104,9 @@ def euler() :
             r5 = k5 * cB[i-1] * cE[i-1]
             r6 = k6 * cB[i-1] * cE[i-1]
             r7 = k7 * cE[i-1]
-
+            # if cAh <= h :
+            #     cAh = np.absolute(cA[i] - cA[i-1]) / h
+            #     h = h /2
             cA[i] = (-r1 + r2 - r3 + r6) * h + cA[i-1]
             cB[i] = (r1 - r2 + r4 - r5 - r6) * h + cB[i-1]
             cC[i] = (-r3 + r6 + r7) * h + cC[i-1]
