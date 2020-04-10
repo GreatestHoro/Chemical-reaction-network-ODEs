@@ -68,8 +68,13 @@ def ODES(C, t):
 # Concentrations()
 con = [100,90,80,70,60]
 def euler() :
-        cAh = 0
+        cAh = cBh = cCh = cDh = cEh = 0
         global con, h
+
+        # Computation of step size according to Engeneering approach
+        # Is not integrated with graph, only show calculation of stepsize
+        estimatedStepSize = computeStepSizeEngAp(con) 
+
         ft = 10        #final t
         t = np.arange(0,ft+0.5,h)
         n = len(t)
@@ -104,20 +109,81 @@ def euler() :
             r5 = k5 * cB[i-1] * cE[i-1]
             r6 = k6 * cB[i-1] * cE[i-1]
             r7 = k7 * cE[i-1]
-            # if cAh <= h :
-            #     cAh = np.absolute(cA[i] - cA[i-1]) / h
-            #     h = h /2
+
+            
             cA[i] = (-r1 + r2 - r3 + r6) * h + cA[i-1]
             cB[i] = (r1 - r2 + r4 - r5 - r6) * h + cB[i-1]
             cC[i] = (-r3 + r6 + r7) * h + cC[i-1]
             cD[i] = (r3 - r4 + r5 ) * h + cD[i-1]
             cE[i] = (r4 - r7 - r6) * h + cE[i-1]
-            
-        
+
+            ##Computing step size h - Engineering method
+            ##Difference between concentration for time 0 and computation 0 + h has to be less than maxDeviation for each eq 
+            #while isNotAcceptableDeviation(cA[i-1], cA[i]) and isNotAcceptableDeviation(cB[i-1], cB[i]) and isNotAcceptableDeviation(cC[i-1], cC[i]) and isNotAcceptableDeviation(cD[i-1], cD[i]) and isNotAcceptableDeviation(cE[i-1], cE[i]):
+            #    # Calibrating h - according to engineering approach
+            #    h = h /2
+
+            #    #Evaluating for step 0 and step 1
+            #    cA[i] = (-r1 + r2 - r3 + r6) * h + cA[i-1]
+            #    cB[i] = (r1 - r2 + r4 - r5 - r6) * h + cB[i-1]
+            #    cC[i] = (-r3 + r6 + r7) * h + cC[i-1]
+            #    cD[i] = (r3 - r4 + r5 ) * h + cD[i-1]
+            #    cE[i] = (r4 - r7 - r6) * h + cE[i-1]   
         
         return [cA,cB,cC,cD,cE]
         # return h
         # j += 1
+
+# Compute Step Size according to Engineering Approach     
+def computeStepSizeEngAp(initalConList, stepSize = 1):
+    notAcceptableCounter = len(initalConList)
+
+    while not (notAcceptableCounter == 0):
+        secondConList = computeConcentration(initalConList, stepSize)
+        notAcceptableCounter = 0
+        for i in range(len(initalConList)):
+            if isNotAcceptableDeviation(initalConList[i], secondConList[i]):
+                notAcceptableCounter += 1
+        stepSize /= 2
+
+    return stepSize
+
+# Compute concentrations for next Euler step
+def computeConcentration(initialConList, stepSize):
+    nextConList = np.ones(len(initialConList))
+    # Euler computation is Hard Coded for example
+    cA = initialConList[0]
+    cB = initialConList[1]
+    cC = initialConList[2]
+    cD = initialConList[3]
+    cE = initialConList[4]
+
+    k1 = k2 = k3 = k4 = k5 = k6 = k7 = 1
+
+    r1 = k1 * cA
+    r2 = k2 * cB
+    r3 = k3 * cA * cC
+    r4 = k4 * cD
+    r5 = k5 * cB * cE
+    r6 = k6 * cB * cE
+    r7 = k7 * cE
+    nextConList[0] = (-r1 + r2 - r3 + r6) * stepSize + cA
+    nextConList[1] = (r1 - r2 + r4 - r5 - r6) * stepSize + cB
+    nextConList[2] = (-r3 + r6 + r7) * stepSize + cC
+    nextConList[3] = (r3 - r4 + r5 ) * stepSize + cD
+    nextConList[4] = (r4 - r7 - r6) * stepSize + cE 
+
+    return nextConList
+
+
+
+
+# Determine whether step size results in not acceptable deviation/difference
+def isNotAcceptableDeviation(prevCon, nextCon, maxDeviation = 0.05):
+    if (abs(prevCon - nextCon) / prevCon) < maxDeviation:
+        return False
+    return True
+
 
 def animate(i) :
     global j, k, h
@@ -192,6 +258,7 @@ def euler_plot():
     data = euler()
     tsize = len(data)
     t2 = np.linspace(1,10,8400)
+    #t2 = np.linspace(1,10,10/h)
 
     euler_plot = plt.subplot(211)
     euler_plot.plot(t2,data[0])
@@ -207,9 +274,7 @@ def euler_plot():
     plt.legend(['cA', 'cB', 'cC', 'cD', 'cE'])
 
 #euler()
-
 euler_plot()
-
 #ode_plot()
 #ani = FuncAnimation(plt.gcf(), animate, interval = 1)
 
