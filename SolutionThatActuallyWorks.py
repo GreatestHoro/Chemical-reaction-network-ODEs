@@ -6,11 +6,11 @@ from itertools import count
 from threading import Timer
 import warnings
 import protocols
-from SampleA import SampleA
+from SampleA import SampleQ
 
-sampleAObject = SampleA
+sampleAObject = SampleQ
 
-sample_A = sampleAObject.sample_A
+sample_A = sampleAObject.sample
 sample_B = {}
 sample_C = {}
 sample_D = {}
